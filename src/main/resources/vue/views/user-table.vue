@@ -1,4 +1,4 @@
-<template id="user-overview">
+<template id="user-table">
     <app-frame>
         <nav aria-label="Page navigation example">
             <ul class="pagination">
@@ -51,8 +51,8 @@
     </app-frame>
 </template>
 <script>
-    Vue.component("user-overview", {
-        template: "#user-overview",
+    Vue.component("user-table", {
+        template: "#user-table",
         data: () => ({
             users: [],
             selectedUserIds: [],

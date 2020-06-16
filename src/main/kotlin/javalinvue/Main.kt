@@ -13,6 +13,7 @@ enum class AppRole : Role { ANYONE, LOGGED_IN }
 fun main() {
 
     val app = Javalin.create { config ->
+        config.addStaticFiles("/public")
         config.enableWebjars()
         config.accessManager { handler, ctx, permittedRoles ->
             when {

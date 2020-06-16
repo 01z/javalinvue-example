@@ -2,8 +2,17 @@ package javalinvue
 
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
+import kotlin.random.Random
 
-data class User(val id: String, val name: String, val email: String, val userDetails: UserDetails?)
+enum class UserState { OK, WARN, ERROR }
+data class User(val id: String, val name: String, val email: String,
+                val quota: Int = Random.nextInt(0,100),
+                val state: UserState = when {
+                    quota >= 80 -> UserState.ERROR
+                    quota >= 50 -> UserState.WARN
+                    else -> UserState.OK
+                },
+                val userDetails: UserDetails?)
 data class UserDetails(val dateOfBirth: String, val salary: String)
 
 val users = setOf<User>(
