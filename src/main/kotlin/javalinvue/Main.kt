@@ -22,10 +22,16 @@ fun main() {
                 else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
             }
         }
-        JavalinVue.stateFunction = { ctx -> mapOf("currentUser" to currentUser(ctx)) }
+        JavalinVue.stateFunction = { ctx ->
+            val m = mapOf(
+                "currentUser" to currentUser(ctx),
+                "currentView" to currentView(ctx)
+            )
+        m }
     }.start(7000)
 
-    app.get("/", VueComponent("<hello-world></hello-world>"), roles(AppRole.ANYONE))
+    app.get("/", VueComponent("<landing-page></landing-page>"), roles(AppRole.ANYONE))
+    app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.LOGGED_IN))
     app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
     app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"), roles(AppRole.LOGGED_IN))
     app.error(404, "html", VueComponent("<not-found></not-found>"))
@@ -37,3 +43,11 @@ fun main() {
 
 private fun currentUser(ctx: Context) =
     if (ctx.basicAuthCredentialsExist()) ctx.basicAuthCredentials().username else null
+
+private fun currentView(ctx: Context) =
+    "JavalinVue - "+when(ctx.path().removePrefix("/")) {
+        "" -> "Dashboard"
+        "users" -> "Users"
+        "cards" -> "CardView"
+        else -> "404"
+    }

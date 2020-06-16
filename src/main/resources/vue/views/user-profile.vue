@@ -1,17 +1,25 @@
 <template id="user-profile">
     <app-frame>
-        <dl v-if="user">
-            <dt>User ID</dt>
-            <dd>{{user.id}}</dd>
-            <dt>Name</dt>
-            <dd>{{user.name}}</dd>
-            <dt>Email</dt>
-            <dd>{{user.email}}</dd>
-            <dt>Birthday</dt>
-            <dd>{{user.userDetails.dateOfBirth}}</dd>
-            <dt>Salary</dt>
-            <dd>{{user.userDetails.salary}}</dd>
-        </dl>
+        <div class="container">
+            <b-form validated="" id="passwordChangeForm" @submit.prevent="changePassword" class="container-fluid">
+                <b-form-group id="userIdG" label="User Id">
+                    <b-form-input id="userId" v-model="user.id" type="text" required="true" />
+                </b-form-group>
+                <b-form-group id="userNameG" label="User Name">
+                    <b-form-input id="userName" v-model="user.name" type="text" required="true" />
+                </b-form-group>
+                <b-form-group id="userEmailId" label="User Email">
+                    <b-form-input id="email" v-model="user.email" type="text" required="true" />
+                </b-form-group>
+                <b-form-group id="userDateG" label="User Date">
+                    <b-form-input id="dateOfBirth" v-model="user.userDetails.dateOfBirth" type="text" required="true" />
+                </b-form-group>
+                <b-form-group id="userSaleryG" label="User Salery">
+                    <b-form-input id="salery" v-model="user.userDetails.salery" type="text" required="true" />
+                </b-form-group>
+                <b-button type="submit" variant="primary">Submit</b-button>
+            </b-form>
+        </div>
     </app-frame>
 </template>
 <script>

@@ -1,6 +1,8 @@
 <template id="not-found">
     <app-frame>
-        <h1>Page not found (error 404)</h1>
+        <div>
+            <h1>Page not found (error 404)</h1>
+        </div>
     </app-frame>
 </template>
 <script>

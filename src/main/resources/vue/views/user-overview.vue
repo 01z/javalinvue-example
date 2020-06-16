@@ -21,18 +21,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="user in users" v-bind:class=
-                    "[ user.state === 'ERROR' ? 'table-danger' : '',  user.state === 'WARN' ? 'table-warn' : '']">
+            <tr v-for="user in users" v-bind:class="mapStyle( user.state, 'table')">
                 <td scope="row" class="text-center">
                     <input type="checkbox" :id="user.id" :value="user.id" v-model="selectedUserIds"/>
                 </td>
-                <td scope="row" class="text-center"><a :href="`/users/${user.id}}`">{{user.id}}</a></td>
+                <td scope="row" class="text-center"><a :href="`/users/${user.id}`">{{user.id}}</a></td>
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
                 <td class="text-right">{{user.state}}</td>
                 <td>
                     <div class="progress"><div
-                            class="progress-bar progress-bar-striped bg-success"
+                            class="progress-bar progress-bar-striped"
+                            v-bind:class="mapStyle( user.state, 'bg')"
                             role="progressbar" :style="`width: ${user.quota}%`"
                             :aria-valuenow="user.quota" aria-valuemin="0" aria-valuemax="100">{{user.quota}} %</div></div>
                 </td>
@@ -62,6 +62,11 @@
                 .then(res => res.json())
                 .then(json => this.users = json)
                 .catch(() => alert("Error while fetching users"));
+        },
+        methods: {
+            mapStyle: function(t,s) {
+                return [ t === 'ERROR' ? `${s}-danger` : '',  t === 'WARN' ? `${s}-warning` : '']
+            }
         }
     });
 </script>
