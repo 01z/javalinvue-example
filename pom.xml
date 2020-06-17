@@ -12,8 +12,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.3.31</kotlin.version>
+        <kotlin.version>1.3.71</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
+        <main.class>javalinvue.MainKt</main.class>
     </properties>
 
     <dependencies>
@@ -49,12 +50,15 @@
             <artifactId>bootstrap</artifactId>
             <version>4.5.0</version>
         </dependency>
+<!--
 
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>bootstrap-vue</artifactId>
             <version>2.15.0</version>
         </dependency>
+
+-->
     </dependencies>
 
     <build>
@@ -80,6 +84,31 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- package fat jar with dependencies -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                    <finalName>${project.artifactId}-${project.version}-full</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
             </plugin>
         </plugins>
     </build>

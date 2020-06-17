@@ -5,7 +5,9 @@ import io.javalin.core.security.Role
 import io.javalin.core.security.SecurityUtil.roles
 import io.javalin.core.util.Header
 import io.javalin.http.Context
+import io.javalin.http.staticfiles.Location
 import io.javalin.plugin.rendering.vue.JavalinVue
+import io.javalin.plugin.rendering.vue.PathMaster
 import io.javalin.plugin.rendering.vue.VueComponent
 
 enum class AppRole : Role { ANYONE, LOGGED_IN }
@@ -22,12 +24,22 @@ fun main() {
                 else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
             }
         }
-        JavalinVue.stateFunction = { ctx ->
-            val m = mapOf(
-                "currentUser" to currentUser(ctx),
-                "currentView" to currentView(ctx)
-            )
-        m }
+
+        // configure JavalinVue
+        JavalinVue.apply {
+
+            // set path to serve vue templates
+            this.rootDirectory("/vue", Location.CLASSPATH)
+
+            // state function to provide server-side state to web client
+            stateFunction = { ctx ->
+                val m = mapOf(
+                    "currentUser" to currentUser(ctx),
+                    "currentView" to currentView(ctx)
+                )
+                m
+            }
+        }
     }.start(7000)
 
     app.get("/", VueComponent("<landing-page></landing-page>"), roles(AppRole.ANYONE))
