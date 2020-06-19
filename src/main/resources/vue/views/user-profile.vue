@@ -12,7 +12,7 @@
                     <b-form-input id="email" v-model="user.email" type="text" required="true" />
                 </b-form-group>
                 <b-form-group id="userDateG" label="User Date">
-                    <b-form-input id="dateOfBirth" v-model="user.userDetails.dateOfBirth" type="text" required="true" />
+                    <b-form-datepicker id="example-datepicker" v-model="user.userDetails.dateOfBirth" class="mb-2" required="true"></b-form-datepicker>
                 </b-form-group>
                 <b-form-group id="userSaleryG" label="User Salery">
                     <b-form-input id="salery" v-model="user.userDetails.salery" type="text" required="true" />

@@ -2,6 +2,8 @@ package javalinvue
 
 import io.javalin.http.Context
 import io.javalin.http.NotFoundResponse
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 enum class UserState { OK, WARN, ERROR }
@@ -13,7 +15,15 @@ data class User(val id: String, val name: String, val email: String,
                     else -> UserState.OK
                 },
                 val userDetails: UserDetails?)
-data class UserDetails(val dateOfBirth: String, val salary: String)
+
+val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
+data class UserDetails(val dateOfBirth: LocalDate, val salary: String) {
+    constructor(dateString: String, salary: String) : this(
+        LocalDate.parse(dateString, DATE_FORMATTER),
+        salary
+    )
+}
 
 val users = setOf<User>(
     User(id = "1", name = "John", email = "john@fake.co", userDetails = UserDetails("21.02.1964", "2773 JB")),

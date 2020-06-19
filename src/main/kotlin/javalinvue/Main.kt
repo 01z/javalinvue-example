@@ -6,6 +6,7 @@ import io.javalin.core.security.SecurityUtil.roles
 import io.javalin.core.util.Header
 import io.javalin.http.Context
 import io.javalin.http.staticfiles.Location
+import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.rendering.vue.JavalinVue
 import io.javalin.plugin.rendering.vue.PathMaster
 import io.javalin.plugin.rendering.vue.VueComponent
@@ -42,6 +43,15 @@ fun main() {
         }
     }.start(7000)
 
+    // browser security enhancements:
+    // By February, 2020: Enforcement rollout for Chrome 80 Stable: The SameSite-by-default and SameSite=None-requires-Secure
+    app.after { ctx ->
+        ctx.cookie("cross-site-cookie","name")
+        ctx.cookie("SameSite","Strict")
+        ctx.cookie("HttpOnly")
+        ctx.cookie("Secure")
+    }
+
     app.get("/", VueComponent("<landing-page></landing-page>"), roles(AppRole.ANYONE))
     app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.LOGGED_IN))
     app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
@@ -51,6 +61,9 @@ fun main() {
     app.get("/api/users", UserController::getAll, roles(AppRole.ANYONE))
     app.get("/api/users/:user-id", UserController::getOne, roles(AppRole.LOGGED_IN))
 
+    // register custom jsonmapper
+    JavalinJson.fromJsonMapper = JavalinGson.fromMapper
+    JavalinJson.toJsonMapper = JavalinGson.toMapper
 }
 
 private fun currentUser(ctx: Context) =
