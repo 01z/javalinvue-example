@@ -2,6 +2,7 @@
     <app-frame>
         <div class="mt-2"></div>
         <b-jumbotron header="BootstrapVue" lead="Bootstrap v4 Components for Vue.js 2">
+            <b-icon class="h2 mt-1" icon="play-fill" variant="primary"></b-icon>
             <p>For more information visit website</p>
             <b-button size="sm" @click="toggle">
                 {{ show ? 'Hide' : 'Show' }} Alert
