@@ -3,28 +3,45 @@
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.css" />
 
-    <!-- Add this after vue.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>-->
+
+    <script src="https://unpkg.com/vue@2.6.11/dist/vue.js"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap@4.5.0/dist/js/bootstrap.min.js"crossorigin="anonymous"></script>
 
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
 
+    <script src="https://unpkg.com/vuex@3.4.0/dist/vuex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js" integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuex-persist@2.2.0/dist/umd/index.min.js" integrity="sha256-KvAvWDTWPzKBSztxmh62cqTu93y8x2jCTP/oDZLiqDk=" crossorigin="anonymous"></script>
+
+    <!-- Global application javascript functions/variables -->
+<!--    <script src="app.js" type="module"></script>-->
+    <script src="test.js" type="module"></script>
+
+    <!-- Registered /vue/*.vue components from /ressources -->
     @componentRegistration
+
 </head>
 <body>
 <main id="main-vue" v-cloak>
     @routeComponent
 </main>
 
-<script>
-    new Vue({el: "#main-vue"});
+<script type="module">
+    // import store
+    import {store} from './store.js';
+
+    // Create global Vue instance with store
+    new Vue({
+        store: store,
+        el: "#main-vue"});
 </script>
 </body>
 </html>

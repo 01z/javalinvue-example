@@ -1,24 +1,34 @@
 <template id="landing-page">
     <app-frame>
         <div class="mt-2"></div>
-        <b-jumbotron header="BootstrapVue" lead="Bootstrap v4 Components for Vue.js 2">
-            <b-icon class="h2 mt-1" icon="play-fill" variant="primary"></b-icon>
-            <p>For more information visit website</p>
+        <b-jumbotron header="BootstrapVue">
+            <template v-slot:lead>
+                <b-icon class="mt-3" icon="play-fill" variant="dark"></b-icon>
+                Bootstrap 4.x frontend, served by Javalin & powered by Kotlin.
+            </template>
             <b-button size="sm" @click="toggle">
-                {{ show ? 'Hide' : 'Show' }} Alert
+                {{ show ? 'Hide' : 'Show' }} Section
             </b-button>
+        </b-jumbotron>
+        <div v-show="show" >
             <b-alert
                     v-model="show"
                     class="mt-3"
                     dismissible
                     @dismissed="dismissed"
             >
-                Hello {{ name }}!
+                Add some {{ name }} sesson-stored messages !
             </b-alert>
-        </b-jumbotron>
+            <state-submit></state-submit>
+            <state-display ></state-display>
+        </div>
     </app-frame>
 </template>
-<script>
+<script type="module">
+    import {sayHi, xxx} from './test.js';
+    sayHi('landing-page')
+    console.log(xxx)
+
     Vue.component("landing-page", {
         template: "#landing-page",
         data() {
