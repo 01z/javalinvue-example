@@ -52,6 +52,17 @@ val GSON = GsonBuilder().apply {
     registerTypeAdapter(LocalDate::class.java, GsonDeserializerLocalDate)
     registerTypeAdapter(LocalDateTime::class.java, GsonSerializerLocalDateTime)
     registerTypeAdapter(LocalDateTime::class.java, GsonDeserializerLocalDateTime)
+
+    // only map specific fields
+    excludeFieldsWithoutExposeAnnotation()
+
+    // Serialized names
+    //@SerializedName("id")
+
+    // set api version
+    // use @Since @Until to version
+    setVersion(1.0)
+
 }.create()
 
 fun toJson(obj: Any): String? = GSON.toJson(obj)
