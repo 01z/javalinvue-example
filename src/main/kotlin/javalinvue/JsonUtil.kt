@@ -7,6 +7,7 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.reflect.full.memberProperties
 
 
 private object GsonSerializerLocalDate : JsonSerializer<LocalDate?> {
@@ -88,4 +89,9 @@ object JavalinGson {
             return GSON.toJson(`object`)
         }
     }
+}
+
+inline fun <reified T : Any> T.asMap() : Map<String, Any?> {
+    val props = T::class.memberProperties.associateBy { it.name }
+    return props.keys.associateWith { props[it]?.get(this) }
 }
