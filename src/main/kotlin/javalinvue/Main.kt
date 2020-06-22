@@ -8,15 +8,18 @@ import io.javalin.http.Context
 import io.javalin.http.staticfiles.Location
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.rendering.vue.JavalinVue
-import io.javalin.plugin.rendering.vue.PathMaster
 import io.javalin.plugin.rendering.vue.VueComponent
+import java.io.File
+import java.nio.file.Paths
 
 enum class AppRole : Role { ANYONE, LOGGED_IN }
 
-fun main() {
+fun main(args: Array<String>) {
 
     val app = Javalin.create { config ->
-        config.addStaticFiles("/public")
+//        val (path,location) = getPathAndLocation("/public/app.js")
+        config.addStaticFiles("src/main/resources/public", Location.EXTERNAL)
+
         config.enableWebjars()
         config.accessManager { handler, ctx, permittedRoles ->
             when {
@@ -30,7 +33,8 @@ fun main() {
         JavalinVue.apply {
 
             // set path to serve vue templates
-            this.rootDirectory("/vue", Location.CLASSPATH)
+            //val (path,location) = getPathAndLocation("/vue/layout.html")
+            //rootDirectory(path, location)
 
             // state function to provide server-side state to web client
             stateFunction = { ctx ->
@@ -64,6 +68,26 @@ fun main() {
     // register custom jsonmapper
     JavalinJson.fromJsonMapper = JavalinGson.fromMapper
     JavalinJson.toJsonMapper = JavalinGson.toMapper
+}
+
+fun getPathAndLocation(resourceReference: String): Pair<String, Location> {
+    /*
+        file:/.../target/classes/public/app.js
+        jar:file:/.../javalinvue-example-1.0-SNAPSHOT-full.jar!/public/app.js
+     */
+
+    val resource = AppRole::class.java.getResource(resourceReference).toString()
+    println(resource)
+    val jarResource = resource.startsWith("jar:")
+
+    val r = if(jarResource)
+        Paths.get(resource.substringAfter("!")).parent.toString().removePrefix(File.pathSeparatorChar.toString()) to Location.CLASSPATH
+    else
+        Paths.get(resource.substringAfter("file:/"))
+            .parent.toString()
+            .replace("""target${File.pathSeparatorChar}classes""","src/main/resources") to Location.EXTERNAL
+    println(r)
+    return r
 }
 
 private fun currentUser(ctx: Context) =

@@ -9,22 +9,23 @@ import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 enum class UserState { OK, WARN, ERROR }
-data class User(@Expose val id: String,
-                @Expose val name: String,
-                @Expose val email: String,
-                @Expose val quota: Int = Random.nextInt(0,100),
-                @Expose val state: UserState = when {
+data class User(val id: String,
+                val name: String,
+                val email: String,
+                val quota: Int = Random.nextInt(0,100),
+                val state: UserState = when {
                     quota >= 80 -> UserState.ERROR
                     quota >= 50 -> UserState.WARN
                     else -> UserState.OK
                 },
-                @Expose @SerializedName("details") val userDetails: UserDetails?,
-                val hiddenDetail: String = "IamSecret" )
+                @GsonHide() val hiddenText: String = "XXX",
+                @SerializedName("details") val userDetails: UserDetails?,
+                @SerializedName("secret") val _hiddenDetail: String = "IamSecret" )
 
 val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-data class UserDetails(@Expose val dateOfBirth: LocalDate,
-                       @Expose val salary: String) {
+data class UserDetails(val dateOfBirth: LocalDate,
+                       @Transient val salary: String) {
     constructor(dateString: String, salary: String) : this(
         LocalDate.parse(dateString, DATE_FORMATTER),
         salary

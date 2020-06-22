@@ -46,6 +46,23 @@ private object GsonDeserializerLocalDateTime : JsonDeserializer<LocalDateTime?> 
 
 inline fun <reified T> fromJson(json: String): T = GSON.fromJson(json, T::class.java)
 
+@Target(AnnotationTarget.FIELD) annotation class GsonHide()
+
+var strategy: ExclusionStrategy = object : ExclusionStrategy {
+    override fun shouldSkipField(field: FieldAttributes): Boolean {
+        return when {
+            field.annotations.find { it.annotationClass == GsonHide::class} !=null -> true
+            field.declaringClass == UserDetails::class.java
+                    && field.name == "anyFieldName" -> true
+            field.name.startsWith("_") -> true
+            else -> false
+        }
+    }
+
+    override fun shouldSkipClass(clazz: Class<*>?): Boolean {
+        return false
+    }
+}
 
 val GSON = GsonBuilder().apply {
     // converter for datetime
@@ -55,7 +72,9 @@ val GSON = GsonBuilder().apply {
     registerTypeAdapter(LocalDateTime::class.java, GsonDeserializerLocalDateTime)
 
     // only map specific fields
-    excludeFieldsWithoutExposeAnnotation()
+    //excludeFieldsWithoutExposeAnnotation()
+
+    addSerializationExclusionStrategy(strategy)
 
     // Serialized names
     //@SerializedName("id")
