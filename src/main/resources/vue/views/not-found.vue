@@ -6,5 +6,7 @@
     </app-frame>
 </template>
 <script>
-    Vue.component("not-found", {template: "#not-found"});
+    Vue.component("not-found", {
+        template: "#not-found"
+    });
 </script>

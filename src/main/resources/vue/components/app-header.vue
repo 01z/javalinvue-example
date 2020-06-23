@@ -13,7 +13,8 @@
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item href="/users">Users</b-nav-item>
                     <b-nav-item href="/cards">Cards</b-nav-item>
-                    <b-nav-item href="/xxxxxxxxxx">XXXX</b-nav-item>
+                    <b-nav-item href="/console">C0nsole</b-nav-item>
+                    <b-nav-item href="/unknown">Unknown</b-nav-item>
                     <b-nav-item v-if="$javalin.state.currentUser" href="/admin" disabled>Admin</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->

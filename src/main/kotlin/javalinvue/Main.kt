@@ -5,16 +5,22 @@ import io.javalin.core.security.Role
 import io.javalin.core.security.SecurityUtil.roles
 import io.javalin.core.util.Header
 import io.javalin.http.Context
+import io.javalin.http.sse.SseClient
 import io.javalin.http.staticfiles.Location
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.rendering.vue.JavalinVue
 import io.javalin.plugin.rendering.vue.VueComponent
 import java.io.File
 import java.nio.file.Paths
+import java.time.LocalDateTime
+import java.util.concurrent.ConcurrentLinkedQueue
+import javax.xml.bind.JAXBElement
 
 enum class AppRole : Role { ANYONE, LOGGED_IN }
 
 fun main(args: Array<String>) {
+
+    val clients = ConcurrentLinkedQueue<SseClient>()
 
     val app = Javalin.create { config ->
 //        val (path,location) = getPathAndLocation("/public/app.js")
@@ -57,7 +63,8 @@ fun main(args: Array<String>) {
     }
 
     app.get("/", VueComponent("<landing-page></landing-page>"), roles(AppRole.ANYONE))
-    app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.LOGGED_IN))
+    app.get("/console", VueComponent("<console-messages></console-messages>"), roles(AppRole.LOGGED_IN))
+    app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.ANYONE))
     app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
     app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"), roles(AppRole.LOGGED_IN))
     app.error(404, "html", VueComponent("<not-found></not-found>"))
@@ -68,6 +75,20 @@ fun main(args: Array<String>) {
     // register custom jsonmapper
     JavalinJson.fromJsonMapper = JavalinGson.fromMapper
     JavalinJson.toJsonMapper = JavalinGson.toMapper
+
+    // add server-side events path
+    app.sse("/sse", { client ->
+        clients.add(client)
+        client.onClose { clients.remove(client) }
+    }, roles(AppRole.ANYONE))
+
+    // send endlessly updates to connected sse-clients
+    while (true) {
+        for (client in clients) {
+            client.sendEvent("update","Javalin @" + LocalDateTime.now().toString())
+        }
+        Thread.sleep(1500)
+    }
 }
 
 fun getPathAndLocation(resourceReference: String): Pair<String, Location> {
