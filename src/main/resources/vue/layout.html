@@ -9,6 +9,8 @@
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>-->
 
     <script src="https://unpkg.com/vue@2.6.11/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3.3.4/dist/vue-router.js"></script>
+
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
@@ -21,27 +23,66 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js" integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuex-persist@2.2.0/dist/umd/index.min.js" integrity="sha256-KvAvWDTWPzKBSztxmh62cqTu93y8x2jCTP/oDZLiqDk=" crossorigin="anonymous"></script>
 
-    <!-- Global application javascript functions/variables -->
+    <!- - Global application javascript functions/variables -->
 <!--    <script src="app.js" type="module"></script>-->
     <script src="test.js" type="module"></script>
 
     <!-- Registered /vue/*.vue components from /ressources -->
     @componentRegistration
 
+    <!-- Alternative register template as routes for vue-router
+    const routes = [
+    { path: '/console', component: { template: '<div>console-messages</div>' } },
+
+    ]
+    -->
 </head>
 <body>
 <main id="main-vue" v-cloak>
-    @routeComponent
+    <!--@-routeComponent -->
+    <router-view></router-view>
 </main>
 
 <script type="module">
     // import store
     import {store} from './store.js';
+    import {router} from './router.js';
 
     // Create global Vue instance with store
-    new Vue({
+    const vue = new Vue({
+        router: router,
         store: store,
         el: "#main-vue"});
+
+    // commit the javalin internally set variables to store
+    store.commit("SET_AUTH", vue.$javalin.state.currentUser)
+
+    router.beforeEach((to, from, next) => {
+        if (to.matched.some(record => record.meta.auth !== undefined || record.meta.auth)) {
+            let auth = store.getters.auth
+            if (!auth.authenticated) {
+                window.location.href = `/authenticate?redirect=/#${to.fullPath}`
+                // this.push({
+                //      path: '/authenticate',
+                //      //query: { redirect: to.fullPath }
+                // })
+            } else {
+                next()
+            }
+        } else {
+            next() // make sure to always call next()!
+        }
+    });
+
+    // get router link title name for navigation
+    router.afterEach((to, from) => {
+        // Use next tick to handle router history correctly
+        Vue.nextTick(() => {
+            const title = to.meta.title || DEFAULT_TITLE;
+            document.title = title;
+            store.commit("SET_NAV", title)
+        });
+    });
 </script>
 </body>
 </html>

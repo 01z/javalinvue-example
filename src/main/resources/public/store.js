@@ -1,5 +1,12 @@
 
 export const state = {
+    auth: {
+        user: '',
+        authenticated: false
+    },
+    context: {
+        title: 'JavalinVue'
+    },
     items: [
         { name: "blah" },
         { name: "blub" },
@@ -10,6 +17,12 @@ export const state = {
 Mutations are functions responsible in directly mutating store state
  */
 const mutations = {
+    SET_NAV(state, payload) {
+        state.context = { title: payload };
+    },
+    SET_AUTH(state, payload) {
+        state.auth = { user: payload, authenticated: payload!=null && payload!=="" };
+    },
     ADD_ITEM(state, payload) {
         state.items.push(payload);
     }
@@ -31,8 +44,14 @@ Getters are primarily used to perform some calculation/manipulation to store
 state before having that information accessible to components.
  */
 const getters = {
-    getItems(state) {
+    items(state) {
         return state.items;
+    },
+    auth(state) {
+        return state.auth;
+    },
+    context(state) {
+        return state.context;
     }
 };
 
@@ -62,4 +81,3 @@ export const store = new Vuex.Store({
     getters,
     plugins: [vuexLocalStorage.plugin]
 });
-

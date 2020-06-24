@@ -29,6 +29,7 @@
             user: null,
         }),
         created() {
+            //todo router param
             const userId = this.$javalin.pathParams["user-id"];
             fetch(`/api/users/${userId}`)
                 .then(res => res.json())

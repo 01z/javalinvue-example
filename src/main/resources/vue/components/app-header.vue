@@ -1,8 +1,8 @@
 <template id="app-header">
     <div>
         <b-navbar toggleable="lg" type="dark" variant="info">
-            <b-navbar-brand href="/"><img src="/logo.png" width="30" height="30" alt="" loading="lazy">
-                {{ $javalin.state.currentView }}
+            <b-navbar-brand to="/"><img src="/logo.png" width="30" height="30" alt="" loading="lazy">
+                {{ title }}
             </b-navbar-brand>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -11,11 +11,11 @@
                 <b-navbar-nav>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
-                    <b-nav-item href="/users">Users</b-nav-item>
-                    <b-nav-item href="/cards">Cards</b-nav-item>
-                    <b-nav-item href="/console">C0nsole</b-nav-item>
-                    <b-nav-item href="/unknown">Unknown</b-nav-item>
-                    <b-nav-item v-if="$javalin.state.currentUser" href="/admin" disabled>Admin</b-nav-item>
+                    <b-nav-item to="/users" replace>Users</b-nav-item>
+                    <b-nav-item to="/cards" replace>Cards</b-nav-item>
+                    <b-nav-item to="/console" replace>C0nsole</b-nav-item>
+                    <b-nav-item href="/unknown" >Unknown</b-nav-item>
+                    <b-nav-item v-if="auth.authenticated" href="/admin" disabled replace>Admin</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
                 <!--<b-navbar-nav class="ml-auto">
@@ -29,7 +29,24 @@
     </div>
 </template>
 <script>
-    Vue.component("app-header", {template: "#app-header"});
+    Vue.component("app-header", {
+        template: "#app-header",
+        data: function () {
+            return {
+            }
+        },
+        computed: {
+            context() {
+                return this.$store.getters.context
+            },
+            auth() {
+                return this.$store.getters.auth
+            },
+            title() {
+                return this.context.title
+            }
+        }
+    });
 </script>
 <style>
 

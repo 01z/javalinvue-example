@@ -3,3 +3,5 @@ export function log(msg) {
 }
 
 export const xxx = "globally defined"
+
+export const DEFAULT_TITLE = "JavalinVue"

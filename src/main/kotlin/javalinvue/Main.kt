@@ -30,8 +30,10 @@ fun main(args: Array<String>) {
         config.accessManager { handler, ctx, permittedRoles ->
             when {
                 AppRole.ANYONE in permittedRoles -> handler.handle(ctx)
-                AppRole.LOGGED_IN in permittedRoles && currentUser(ctx) != null -> handler.handle(ctx)
-                else -> ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
+                AppRole.LOGGED_IN in permittedRoles && currentUser(ctx) != null ->
+                    handler.handle(ctx)
+                else ->
+                    ctx.status(401).header(Header.WWW_AUTHENTICATE, "Basic")
             }
         }
 
@@ -63,11 +65,18 @@ fun main(args: Array<String>) {
     }
 
     app.get("/", VueComponent("<landing-page></landing-page>"), roles(AppRole.ANYONE))
-    app.get("/console", VueComponent("<console-messages></console-messages>"), roles(AppRole.LOGGED_IN))
-    app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.ANYONE))
-    app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
-    app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"), roles(AppRole.LOGGED_IN))
-    app.error(404, "html", VueComponent("<not-found></not-found>"))
+//    app.get("/console", VueComponent("<console-messages></console-messages>"), roles(AppRole.LOGGED_IN))
+//    app.get("/cards", VueComponent("<user-cards></user-cards>"), roles(AppRole.ANYONE))
+//    app.get("/users", VueComponent("<user-overview></user-overview>"), roles(AppRole.ANYONE))
+//    app.get("/users/:user-id", VueComponent("<user-profile></user-profile>"), roles(AppRole.LOGGED_IN))
+//    app.error(404, "html", VueComponent("<not-found></not-found>"))
+
+    app.get("/authenticate", { ctx -> // runs on a different server than serverOneApp
+//        val string = ctx.cookieStore<String>("string")
+//        val i = ctx.cookieStore<Int>("i")
+//        val list = ctx.cookieStore<List<String>>("list")
+        ctx.redirect(ctx.queryParam("redirect","/").toString())
+    }, roles(AppRole.LOGGED_IN))
 
     app.get("/api/users", UserController::getAll, roles(AppRole.ANYONE))
     app.get("/api/users/:user-id", UserController::getOne, roles(AppRole.LOGGED_IN))
@@ -111,13 +120,17 @@ fun getPathAndLocation(resourceReference: String): Pair<String, Location> {
     return r
 }
 
-private fun currentUser(ctx: Context) =
-    if (ctx.basicAuthCredentialsExist()) ctx.basicAuthCredentials().username else null
+private fun currentUser(ctx: Context): String? {
+    return if (ctx.basicAuthCredentialsExist()) {
+        val userName = ctx.basicAuthCredentials().username
+        if(!userName.isNullOrEmpty())
+            userName
+        else
+            null
+    } else {
+        null
+    }
+}
 
 private fun currentView(ctx: Context) =
-    "JavalinVue - "+when(ctx.path().removePrefix("/")) {
-        "" -> "Dashboard"
-        "users" -> "Users"
-        "cards" -> "CardView"
-        else -> "404"
-    }
+    ctx.path().removePrefix("/")

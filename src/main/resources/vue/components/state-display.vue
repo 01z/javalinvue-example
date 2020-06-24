@@ -9,7 +9,7 @@
         template: "#state-display",
         computed: {
             items() {
-                return this.$store.getters.getItems;
+                return this.$store.getters.items;
             }
         }
     });
