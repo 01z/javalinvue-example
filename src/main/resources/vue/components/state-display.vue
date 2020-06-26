@@ -8,9 +8,9 @@
     Vue.component("state-display", {
         template: "#state-display",
         computed: {
-            items() {
-                return this.$store.getters.items;
-            }
+            ...Vuex.mapGetters([
+                'items',
+            ]),
         }
     });
 </script>

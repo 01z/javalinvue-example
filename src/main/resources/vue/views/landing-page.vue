@@ -7,7 +7,7 @@
                 Bootstrap 4.x frontend, served by Javalin & powered by Kotlin.
             </template>
             <b-button size="sm" @click="toggle">
-                {{ show ? 'Hide' : 'Show' }} Section
+                {{ show ? 'Hide' : 'Show' }} State-Section
             </b-button>
         </b-jumbotron>
         <div v-show="show" >

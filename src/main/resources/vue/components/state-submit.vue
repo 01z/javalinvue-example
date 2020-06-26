@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-10">
                 <b-form-input v-model="itemInput" type="text"
-                              placeholder="Add something to state ..."
+                              :placeholder="`Add something to state ... (like ${randomText(10)})`"
                               v-on:keyup.enter="addItem"
                 >
                 </b-form-input>
@@ -18,10 +18,12 @@
 
 <script type="module">
 
-    // import {destroyState, initializeState} from "./store.js"
+    // import mixins module to use external function in :attribute="fx(xx)"
+    import mixins from "/mixins.js";
 
     Vue.component("state-submit", {
         template: "#state-submit",
+        mixins: [mixins],
         data() {
             return {
                 itemInput: ""
