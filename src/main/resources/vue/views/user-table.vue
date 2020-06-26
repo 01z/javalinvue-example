@@ -1,4 +1,29 @@
 <template id="user-table">
+<!--
+tableFields: [
+                {   key: 'partner', label: 'Partner', sortable: true},
+                {   key: 'activationDate', label: 'Aktivierungs-Datum', },
+                {   key: 'fileName', label: 'Dateiname',sortable: true},
+                {
+                    key: 'fileSize', label: 'Dateigröße',
+                    formatter: (value, key, item) => {
+                        return convertFileSize(item.fileSize)
+                    },
+                },
+                {   key: 'state', label: 'Status', sortable: true,
+                    filterByFormatted: true
+                },
+                {
+                    key: 'action'
+                },
+                {
+                    key: 'updated',
+                    label: 'Timestamp',
+                    formatter: (value, key, item) => {
+                        return formatItemTimestamp(item,false);
+                    }
+                }
+-->
     <app-frame>
         <nav aria-label="Page navigation example">
             <ul class="pagination">
@@ -9,6 +34,62 @@
                 <li class="page-item"><a class="page-link" href="#">Next</a></li>
             </ul>
         </nav>
+
+        <b-table ref="eventsTable"
+                 sticky-header
+                 show-empty
+                 sort-icon-left
+                 :tbody-tr-class="eventRowClass"
+                 :busy="isLoading"
+                 :items="displayEvents"
+                 :fields="tableFields" primary-key="id"
+                 :filter="filterText"
+                 :filter-included-fields="['fileName','state','partner']"
+        >
+            <!--
+                 :filter-function="filterTableByPartner"
+                 :filter="filterPartner"
+                 selectable
+                 :select-mode="single"
+                 @row-selected="onEventRowSelected"
+            - ->
+
+            <template v-slot:table-busy>
+                <div class="text-center text-dark my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading ...</strong>
+                </div>
+            </template>
+
+            <template v-slot:cell(action)="row">
+                <b-button :v-show="getRowAction(row)" size="sm" @click="resubmit(row)" class="mr-2">
+                    Submit
+                </b-button>
+                <b-button size="sm" @click="row.toggleDetails">
+                    {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+                </b-button>
+            </template>
+
+            <template v-slot:cell(state)="data">
+                <item-status :item="data.item"></item-status>
+            </template>
+
+            <template v-slot:empty-html="scope">
+                <h4>No user data found</h4>
+            </template>
+            <template v-slot:empty-filtered-html="scope">
+                <h4>No items matching filter</h4>
+            </template>
+
+            <template v-slot:row-details="row">
+                <b-card>
+                    <ul>
+                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                    </ul>
+                </b-card>
+            </template>
+        </b-table>
+        -->
         <table class="table table-hover table-sm">
             <thead class="thead-light">
             <tr >
@@ -56,7 +137,33 @@
         data: () => ({
             users: [],
             selectedUserIds: [],
+            /* prepared for b-table
+            isLoading: false,
+            filterText: "",
+            tableFields: [
+                {   key: 'id', label: 'ID', sortable: true },
+                {   key: 'name', label: 'User Name',sortable: true},
+                {   key: 'state', label: 'Status', sortable: true,
+                    filterByFormatted: true
+                    formatter: (value, key, item) => {
+                        return xxx(value)
+                    },
+                },
+                {
+                    key: 'action'
+                },
+            ],
+            */
         }),
+        computed: {
+            partnerNames(){
+                return Object.values(this.partners).map((it) => it.name)
+            },
+/*
+            ...Vuex.mapGetters([
+            ])
+*/
+        },
         created() {
             fetch("/api/users")
                 .then(res => res.json())
